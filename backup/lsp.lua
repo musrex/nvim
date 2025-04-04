@@ -8,15 +8,14 @@ require('mason-lspconfig').setup({
     ensure_installed = {
 	--C, Python, and Java installed via :LspInstall command
 	'lua_ls', --lua
-	'tsserver', --javascript
 	'eslint', --javascript errors
 	'html', --html, duh
 	'cssls', --css
-    'jdtls', --java...
 	},
     handlers = {
 	lsp.default_setup,
     },
+    
 })
 
 local cmp = require('cmp')
@@ -56,5 +55,6 @@ lsp.on_attach(function(client, bufnr)
 
 end)
 
-lsp.setup()
 
+
+lsp.setup()

@@ -1,5 +1,6 @@
 require("leandro")
 require("leandro.set")
+require("config.lazy")
 print([[
    __                      __                                    
   / /  ___  ___ _ ___  ___/ /____ ___                            

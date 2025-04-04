@@ -8,6 +8,8 @@ vim.api.nvim_set_keymap(
   { noremap = true, silent = true }
   )
 
+vim.opt.clipboard = "unnamedplus"
+  
 -- Setting tabs
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -36,3 +38,20 @@ vim.opt.colorcolumn = "80"
 
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
+
+
+vim.opt.timeoutlen = 300  -- Lower the timeout for mapped sequences (default is 1000)
+vim.opt.ttimeoutlen = 0   -- Make key sequences (like <C-e>) instant
+
+
+-- Fugitive
+vim.keymap.set("n", "<leader>gs", vim.cmd.Git);
+
+-- Undo Tree
+vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+
+
+--vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = true })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = true })
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = true })
+vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { buffer = true })
