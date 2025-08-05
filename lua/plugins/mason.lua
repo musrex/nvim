@@ -1,53 +1,35 @@
 return {
+    -- Mason - Package manager for LSP servers, formatters, etc.
     {
         "williamboman/mason.nvim",
         config = function()
             require("mason").setup()
-        end,
-    },
-    {
-        "williamboman/mason-lspconfig.nvim",
-        dependencies = { "williamboman/mason.nvim" },  -- Ensure Mason loads first
-        config = function()
-            require("mason-lspconfig").setup()
-        end,
+        end
     },
     
-    --LSP Config
+    -- LSP Configuration
     {
         "neovim/nvim-lspconfig",
-        dependencies = { 
-            "williamboman/mason-lspconfig.nvim",
-            "hrsh7th/cmp-nvim-lsp"
+        dependencies = {
+            "williamboman/mason.nvim",
+            "hrsh7th/cmp-nvim-lsp", 
         },
         config = function()
+            -- Basic LSP setup for specific servers
             local lspconfig = require("lspconfig")
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
             
-            require("mason-lspconfig").setup_handlers({
-                function(server_name)
-                    lspconfig[server_name].setup({
-                        capabilities = capabilities
-                    })
-                end,
-            })
-
-            -- Specific Rust Analyzer configuration
-            lspconfig.rust_analyzer.setup({
-                capabilities = capabilities,
-                settings = {
-                    ['rust-analyzer'] = {
-                        diagnostics = {
-                            enable = true
-                        }
-                    }
-                }
-            })
-        end,
+            -- Setup servers directly without mason-lspconfig
+            local servers = { "lua_ls", "pyright", "rust_analyzer"}
+            for _, server in ipairs(servers) do
+                lspconfig[server].setup({
+                    capabilities = capabilities
+                })
+            end
+        end
     },
-
-
-    -- Autocomplete setup
+    
+    -- Autocompletion
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
@@ -57,19 +39,24 @@ return {
         },
         config = function()
             local cmp = require("cmp")
+            local luasnip = require("luasnip")
+            
             cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
                 mapping = cmp.mapping.preset.insert({
                     ["<C-Space>"] = cmp.mapping.complete(),
                     ["<CR>"] = cmp.mapping.confirm({ select = true }),
                 }),
-                sources = cmp.config.sources({
+                sources = {
                     { name = "nvim_lsp" },
-                    { name = "luasnip"},
+                    { name = "luasnip" },
                     { name = "buffer" },
-                    { name = "path" }
-                })
+                }
             })
-        end,
-    },
+        end
+    }
 }
-
