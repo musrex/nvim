@@ -1,32 +1,22 @@
 return {
     -- Mason - Package manager for LSP servers, formatters, etc.
     {
-        "williamboman/mason.nvim",
-        config = function()
-            require("mason").setup()
-        end
-    },
-    
-    -- LSP Configuration
-    {
-        "neovim/nvim-lspconfig",
-        dependencies = {
-            "williamboman/mason.nvim",
-            "hrsh7th/cmp-nvim-lsp", 
+        "mason-org/mason-lspconfig.nvim",
+        opts = {
+            ensure_installed = {"lua_ls", "rust_analyzer" },
         },
-        config = function()
-            -- Basic LSP setup for specific servers
-            local lspconfig = require("lspconfig")
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
-            
-            -- Setup servers directly without mason-lspconfig
-            local servers = { "lua_ls", "pyright", "rust_analyzer"}
-            for _, server in ipairs(servers) do
-                lspconfig[server].setup({
-                    capabilities = capabilities
-                })
-            end
-        end
+        dependencies = {
+        	{ "mason-org/mason.nvim", opts = {} },
+	       "neovim/nvim-lspconfig",
+        	"hrsh7th/cmp-nvim-lsp",
+        },
+        config = function(_, opts)
+            vim.lsp.config("*", {
+                capabilities = require("cmp_nvim_lsp").default_capabilities(),
+            })
+
+            require("mason-lspconfig").setup(opts)
+        end,
     },
     
     -- Autocompletion
@@ -55,8 +45,8 @@ return {
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
                     { name = "buffer" },
-                }
+                },
             })
         end
-    }
+    },
 }
